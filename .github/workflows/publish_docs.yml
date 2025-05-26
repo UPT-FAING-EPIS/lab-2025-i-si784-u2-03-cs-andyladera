@@ -19,10 +19,10 @@ jobs:
 
       - name: Install DocFX
         run: |
-          wget https://github.com/dotnet/docfx/releases/download/v2.75.2/docfx-linux-x64.tar.gz
+          wget https://github.com/dotnet/docfx/releases/download/v2.78.3/docfx-linux-x64.tar.gz
           mkdir docfx
           tar -xzf docfx-linux-x64.tar.gz -C docfx
-          sudo ln -s $PWD/docfx/docfx /usr/local/bin/docfx
+          sudo ln -sf $PWD/docfx/docfx /usr/local/bin/docfx
 
       - name: Generate documentation with DocFX
         run: docfx docfx.json
