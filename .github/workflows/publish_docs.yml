@@ -1,34 +1,39 @@
-name: Publish Documentation
+name: Publicar Documentación
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main  # Ajusta si usas otra rama principal
 
 jobs:
-  build:
+  build-docs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout del código
         uses: actions/checkout@v4
 
-      - name: Setup .NET
+      - name: Instalar .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x' # o ajusta según tu proyecto
+          dotnet-version: '9.0.x'  # Ajusta según necesidad
 
-      - name: Install DocFX
+      - name: Compilar solución con XML Docs habilitados
+        run: dotnet build ./MyMath/MyMath.sln --configuration Release
+
+      - name: Instalar DocFX globalmente
         run: |
-          wget https://github.com/dotnet/docfx/releases/download/v2.78.3/docfx-linux-x64.tar.gz
-          mkdir docfx
-          tar -xzf docfx-linux-x64.tar.gz -C docfx
-          sudo ln -sf $PWD/docfx/docfx /usr/local/bin/docfx
+          dotnet tool install --global docfx
+          echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
 
-      - name: Generate documentation with DocFX
-        run: docfx docfx.json
+      - name: Generar documentación con DocFX
+        run: |
+          cd docfx_project
+          docfx build
 
-      - name: Deploy to GitHub Pages
+      - name: Publicar documentación en GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
+          publish_dir: ./docfx_project/_site
+          publish_branch: gh-pages  # Opcional: la rama destino para GitHub Pages
