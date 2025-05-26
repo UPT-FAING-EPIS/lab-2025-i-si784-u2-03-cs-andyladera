@@ -15,16 +15,17 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'  # Ajusta si usas otra versión
+          dotnet-version: '9.0.x'
 
-      - name: Setup DocFX
-        uses: crazy-max/ghaction-chocolatey@v3
-        with:
-          args: install docfx -y
-
-      - name: Generate metadata and build site
+      - name: Install DocFX
         run: |
-          docfx docfx.json
+          wget https://github.com/dotnet/docfx/releases/latest/download/docfx-linux-x64.tar.gz
+          mkdir docfx
+          tar -xzf docfx-linux-x64.tar.gz -C docfx
+          sudo ln -s $PWD/docfx/docfx /usr/local/bin/docfx
+
+      - name: Generate documentation with DocFX
+        run: docfx docfx.json
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
