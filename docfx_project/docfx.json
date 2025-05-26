@@ -1,0 +1,28 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": ["Bank.Domain/Bank.Domain.csproj"]
+        }
+      ],
+      "dest": "api"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": ["**/*.yml", "**/*.md"]
+      }
+    ],
+    "resource": [
+      {
+        "files": ["**/images/**"]
+      }
+    ],
+    "dest": "_site",
+    "globalMetadata": {
+      "_appTitle": "Bank Documentation"
+    }
+  }
+}
