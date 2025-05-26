@@ -19,7 +19,7 @@ jobs:
           dotnet-version: '9.0.x'  # Ajusta según necesidad
 
       - name: Compilar solución con XML Docs habilitados
-        run: dotnet build ./MyMath/MyMath.sln --configuration Release
+        run: dotnet build ./Bank/Bank.sln --configuration Release
 
       - name: Instalar DocFX globalmente
         run: |
