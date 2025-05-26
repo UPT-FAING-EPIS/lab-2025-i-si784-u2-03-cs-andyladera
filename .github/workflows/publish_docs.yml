@@ -15,11 +15,11 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '9.0.x' # o ajusta según tu proyecto
 
       - name: Install DocFX
         run: |
-          wget https://github.com/dotnet/docfx/releases/latest/download/docfx-linux-x64.tar.gz
+          wget https://github.com/dotnet/docfx/releases/download/v2.75.2/docfx-linux-x64.tar.gz
           mkdir docfx
           tar -xzf docfx-linux-x64.tar.gz -C docfx
           sudo ln -s $PWD/docfx/docfx /usr/local/bin/docfx
