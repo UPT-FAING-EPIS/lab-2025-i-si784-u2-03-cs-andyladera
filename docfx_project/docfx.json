@@ -3,7 +3,8 @@
     {
       "src": [
         {
-          "files": ["Bank.Domain/Bank.Domain.csproj"]
+          "src": "../Bank/Bank.Domain",
+          "files": [ "Bank.Domain.csproj" ]
         }
       ],
       "dest": "api"
@@ -11,18 +12,11 @@
   ],
   "build": {
     "content": [
-      {
-        "files": ["**/*.yml", "**/*.md"]
-      }
+      { "files": ["**/*.yml", "**/*.md"] }
     ],
     "resource": [
-      {
-        "files": ["**/images/**"]
-      }
+      { "files": ["images/**"] }
     ],
-    "dest": "_site",
-    "globalMetadata": {
-      "_appTitle": "Bank Documentation"
-    }
+    "dest": "_site"
   }
 }

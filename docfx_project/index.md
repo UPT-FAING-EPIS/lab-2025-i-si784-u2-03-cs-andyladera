@@ -1,4 +1,7 @@
-# This is the **HOMEPAGE**.
-Refer to [Markdown](http://daringfireball.net/projects/markdown/) for how to write markdown files.
-## Quick Start Notes:
-1. Add images to the *images* folder if the file is referencing an image.
+---
+title: Bienvenido a la documentación de Bank.Domain
+---
+
+# Proyecto Bank.Domain
+
+Bienvenido a la documentación generada con DocFX. Puedes consultar la [documentación de API aquí](api/Bank.Domain.html).
