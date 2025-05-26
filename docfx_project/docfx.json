@@ -12,7 +12,12 @@
   ],
   "build": {
     "content": [
-      { "files": ["**/*.yml", "**/*.md"] }
+      {
+        "files": [ "index.md" ]
+      },
+      {
+        "files": [ "api/**.yml", "api/index.md" ]
+      }
     ],
     "resource": [
       { "files": ["images/**"] }

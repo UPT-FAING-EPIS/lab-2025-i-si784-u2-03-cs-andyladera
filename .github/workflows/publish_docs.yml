@@ -3,11 +3,11 @@ name: Publicar Documentación
 on:
   push:
     branches:
-      - main  # Ajusta si usas otra rama principal
+      - main  # Ajusta si usas otra rama principal (Se activa cada vez que se hace un push a la rama MAIN)
 
 jobs:
   build-docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest #Se ejecuta en un runner con sistema operativo ubuntu linux
 
     steps:
       - name: Checkout del código
@@ -25,6 +25,11 @@ jobs:
         run: |
           dotnet tool install --global docfx
           echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Generar metadatos de la API con DocFX
+        run: |
+          cd docfx_project
+          docfx metadata
 
       - name: Generar documentación con DocFX
         run: |
