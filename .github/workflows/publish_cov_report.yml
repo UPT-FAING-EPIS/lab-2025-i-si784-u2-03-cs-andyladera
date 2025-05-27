@@ -1,4 +1,4 @@
-name: Publicar Reporte de Cobertura
+name: Publicar Reporte de Cobertura #nombre del workflow
 
 on:
   push:
@@ -10,27 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout del código
-        uses: actions/checkout@v4
+      - name: Checkout del código 
+        uses: actions/checkout@v4 #clona mi repositorio
 
       - name: Instalar .NET SDK 9.0
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v4 #Instala el SDK de .NET 9.0
         with:
           dotnet-version: '9.0.x'
 
       - name: Restaurar paquetes NuGet
-        run: dotnet restore ./Bank/Bank.sln
+        run: dotnet restore ./Bank/Bank.sln #Restaura dependecias o paquetes NUGET
 
       - name: Compilar solución
-        run: dotnet build ./Bank/Bank.sln --configuration Release --no-restore
+        run: dotnet build ./Bank/Bank.sln --configuration Release --no-restore #Compila el proyecto
 
-      - name: Ejecutar pruebas con cobertura
+      - name: Ejecutar pruebas con cobertura #Ejecuta los test y genera reporte
         run: dotnet test ./Bank/Bank.Domain.Tests/Bank.Domain.Tests.csproj --configuration Release --no-build --collect:"XPlat Code Coverage"
 
-      - name: Instalar ReportGenerator
+      - name: Instalar ReportGenerator #INstala reportgenerator
         run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
-      - name: Generar reporte HTML de cobertura
+      - name: Generar reporte HTML de cobertura #Genera reporte
         run: |
           reportgenerator -reports:"./Bank/Bank.Domain.Tests/TestResults/*/coverage.cobertura.xml" -targetdir:"coverage-report" -reporttypes:Html
 
@@ -38,5 +38,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./coverage-report
+          publish_dir: ./Bank/coverage-report
           publish_branch: gh-pages
