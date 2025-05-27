@@ -1,0 +1,44 @@
+name: Publicar Reporte de Cobertura
+
+on:
+  push:
+    branches:
+      - main  # Cambia si tu rama principal tiene otro nombre
+
+jobs:
+  build-and-publish-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Instalar .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'  # Asegúrate de usar la misma versión que usas localmente
+
+      - name: Restaurar dependencias
+        run: dotnet restore ./Bank/Bank.sln
+
+      - name: Ejecutar pruebas y generar cobertura
+        run: |
+          dotnet test ./Bank/Bank.Domain.Tests/Bank.Domain.Tests.csproj --collect:"XPlat Code Coverage" --results-directory ./TestResults
+
+      - name: Instalar ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      - name: Generar reporte HTML de cobertura
+        run: |
+          reportgenerator \
+            -reports:"./TestResults/**/coverage.cobertura.xml" \
+            -targetdir:"coverage-report" \
+            -reporttypes:Html
+
+      - name: Publicar reporte en GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./coverage-report
+          publish_branch: gh-pages
+          destination_dir: coverage  # Así se accede desde /coverage
