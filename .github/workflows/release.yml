@@ -1,0 +1,44 @@
+name: Release NuGet Package
+
+on:
+  push:
+    tags:
+      - 'v2022074258*'  # Trigger only when a tag with your code is pushed
+
+jobs:
+  build-pack-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore ./Bank/Bank.sln
+
+      - name: Build project
+        run: dotnet build ./Bank/Bank.sln --configuration Release --no-restore -p:Version=2022074258
+
+      - name: Pack NuGet package
+        run: dotnet pack ./Bank/Bank.Domain/Bank.Domain.csproj --configuration Release --no-build -p:PackageVersion=2022074258 --output ./nupkg
+
+      - name: Publish to GitHub Packages
+        run: dotnet nuget push ./nupkg/*.nupkg --source "github" --api-key ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v2022074258
+          name: Release v2022074258
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
