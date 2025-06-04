@@ -1,4 +1,4 @@
-name: Publicar Reporte de Cobertura #nombre del workflow
+name: Publicar Reporte de Cobertura y Documentación
 
 on:
   push:
@@ -6,37 +6,57 @@ on:
       - main  # o tu rama principal
 
 jobs:
-  build-and-publish-coverage:
+  build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout del código 
-        uses: actions/checkout@v4 #clona mi repositorio
+      - name: Checkout del código
+        uses: actions/checkout@v4
 
-      - name: Instalar .NET SDK 9.0
-        uses: actions/setup-dotnet@v4 #Instala el SDK de .NET 9.0
+      - name: Instalar .NET SDK
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
 
       - name: Restaurar paquetes NuGet
-        run: dotnet restore ./Bank/Bank.sln #Restaura dependecias o paquetes NUGET
+        run: dotnet restore ./Bank/Bank.sln
 
       - name: Compilar solución
-        run: dotnet build ./Bank/Bank.sln --configuration Release --no-restore #Compila el proyecto
+        run: dotnet build ./Bank/Bank.sln --configuration Release --no-restore
 
-      - name: Ejecutar pruebas con cobertura #Ejecuta los test y genera reporte
+      - name: Ejecutar pruebas con cobertura
         run: dotnet test ./Bank/Bank.Domain.Tests/Bank.Domain.Tests.csproj --configuration Release --no-build --collect:"XPlat Code Coverage"
 
-      - name: Instalar ReportGenerator #INstala reportgenerator
+      - name: Instalar ReportGenerator
         run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
-      - name: Generar reporte HTML de cobertura #Genera reporte
+      - name: Generar reporte HTML de cobertura
         run: |
           reportgenerator -reports:"./Bank/Bank.Domain.Tests/TestResults/*/coverage.cobertura.xml" -targetdir:"coverage-report" -reporttypes:Html
 
-      - name: Publicar reporte en GitHub Pages
+      - name: Instalar DocFX globalmente
+        run: |
+          dotnet tool install --global docfx
+          echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Generar metadatos de la API con DocFX
+        run: |
+          cd docfx_project
+          docfx metadata
+
+      - name: Generar documentación con DocFX
+        run: |
+          cd docfx_project
+          docfx build
+
+      - name: Copiar reporte de cobertura a la documentación
+        run: |
+          mkdir -p docfx_project/_site/coverage-report
+          cp -r coverage-report/* docfx_project/_site/coverage-report/
+
+      - name: Publicar documentación y reporte en GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./Bank/coverage-report
+          publish_dir: ./docfx_project/_site
           publish_branch: gh-pages
